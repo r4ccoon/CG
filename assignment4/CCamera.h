@@ -12,6 +12,8 @@ public:
 	void SetPosition(Vec3f);
 	void SetTarget(Vec3f);
 
+	void Reset();
+
 private:
 	Vec3f *_eyePosition;
 	Vec3f *_lookAt;

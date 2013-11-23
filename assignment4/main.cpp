@@ -21,6 +21,7 @@
 #include "CCamera.h"
 #include "CDrawableObject.h"
 #include "CCoordinate.h"
+#include "CPlane.h"
 #include "Trackball.h"
 
 using namespace std;
@@ -35,7 +36,12 @@ SimpleTrackball *trackBall;
 void init(void){ 
     glClearColor (0.0, 0.0, 0.0, 0.0);
     glShadeModel (GL_FLAT);
-    
+
+	// Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// enable z buffer depth test
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
@@ -48,6 +54,7 @@ void initObjects(){
 	allObjects = new vector<CDrawableObject*>();
 	// the cartesion coordinate lines
 	allObjects->push_back(new CCoordinate(5));
+	allObjects->push_back(new CPlane(5));
 }
  
 void display(void){
@@ -96,17 +103,10 @@ void keyMap(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-		case 'd':
-        case 'D': 
-			break;
-        
-        case 's':
-        case 'S': 
-			break;
-            
-		case 'a':
-        case 'A': 
-			break;
+		case 'r':
+        case 'R': 
+			camera->Reset();
+			break; 
 	}
 }
 

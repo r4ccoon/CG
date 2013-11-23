@@ -67,6 +67,7 @@
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCoordinate.cpp" />
     <ClCompile Include="CDrawableObject.cpp" />
+    <ClCompile Include="CPlane.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Trackball.cpp" />
   </ItemGroup>
@@ -74,6 +75,7 @@
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCoordinate.h" />
     <ClInclude Include="CDrawableObject.h" />
+    <ClInclude Include="CPlane.h" />
     <ClInclude Include="Trackball.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
