@@ -18,15 +18,19 @@
 
 #include <iostream>
 #include <vector> 
+#include "CCamera.h"
 #include "CDrawableObject.h"
 #include "CCoordinate.h"
+#include "Trackball.h"
 
 using namespace std;
 
 GLfloat width = 800;
 GLfloat height = 600;
 
+CCamera* camera;
 vector<CDrawableObject*> *allObjects;
+SimpleTrackball *trackBall;
 
 void init(void){ 
     glClearColor (0.0, 0.0, 0.0, 0.0);
@@ -39,6 +43,8 @@ void init(void){
 }
 
 void initObjects(){
+	camera = new CCamera();
+	trackBall = new SimpleTrackball();
 	allObjects = new vector<CDrawableObject*>();
 	// the cartesion coordinate lines
 	allObjects->push_back(new CCoordinate(5));
@@ -62,6 +68,10 @@ void display(void){
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		gluSphere(qsphere, 1, 32, 32);
 	}
+
+	camera->Look(width, height);
+	trackBall->multModelMatrix();
+
     glutSwapBuffers();
 }
 
@@ -79,23 +89,10 @@ void reshape(int w, int h){
     height = h;
     
     // viewport set
-    glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-    
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-	//gluPerspective(60.0, width / height, 1.0, 10.0);
-
-	float ke = width / 60;
-	float he = height / 60;
-
-	glOrtho(-ke, ke, -he, he, 0, 10);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-	gluLookAt(2.0, 2.0, 5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glViewport (0, 0, (GLsizei) w, (GLsizei) h); 
 }
 
-void keymap(unsigned char key, int x, int y)
+void keyMap(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
@@ -111,6 +108,27 @@ void keymap(unsigned char key, int x, int y)
         case 'A': 
 			break;
 	}
+}
+
+void mouseMap(int button, int state, int x, int y)
+{
+	if (button == GLUT_LEFT_BUTTON)
+	{
+		if (state == GLUT_DOWN)
+		{
+			trackBall->startBall(x, y);
+		}
+
+		if (state == GLUT_UP)
+		{
+			trackBall->stopBall(x, y);
+		}
+	}
+}
+
+void mouseDrag(int x, int y)
+{
+	trackBall->rollBall(x, y);
 }
     
 int main(int argc, char** argv)
@@ -129,9 +147,11 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
     
-    // keyboard handling
-	glutKeyboardFunc(keymap);
-    
+    // control handling
+	glutKeyboardFunc(keyMap);
+	glutMouseFunc(mouseMap);
+	glutMotionFunc(mouseDrag);
+
 	// animate
 	glutIdleFunc(animation);
     

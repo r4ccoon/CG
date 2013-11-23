@@ -32,9 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Trackball.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="CCoordinate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -44,8 +41,11 @@
     <ClInclude Include="CCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Trackball.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="vec3.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

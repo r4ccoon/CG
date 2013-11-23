@@ -8,6 +8,10 @@ public:
 	CCamera();
 	~CCamera();
 
+	void Look(float width, float height);
+	void SetPosition(Vec3f);
+	void SetTarget(Vec3f);
+
 private:
 	Vec3f *_eyePosition;
 	Vec3f *_lookAt;
