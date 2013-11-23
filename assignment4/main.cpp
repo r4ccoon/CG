@@ -6,20 +6,29 @@
 // 
   
 #ifdef _WIN32
-    #include <windows.h>
-	#include <GL/gl.h>
-	#include <GL/glu.h>
-	#include <GL/glut.h> 
-#elif __APPLE__
-    #include <GLUT/glut.h>
-#else 
-	#include <GL/glut.h> 
+#include <windows.h>
 #endif
+#if __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+#endif
+
+#include <iostream>
+#include <vector> 
+#include "CDrawableObject.h"
+#include "CCoordinate.h"
+
+using namespace std;
 
 GLfloat width = 800;
 GLfloat height = 600;
 
-void init(void){
+vector<CDrawableObject*> *allObjects;
+
+void init(void){ 
     glClearColor (0.0, 0.0, 0.0, 0.0);
     glShadeModel (GL_FLAT);
     
@@ -28,12 +37,31 @@ void init(void){
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
 }
+
+void initObjects(){
+	allObjects = new vector<CDrawableObject*>();
+	// the cartesion coordinate lines
+	allObjects->push_back(new CCoordinate(5));
+}
  
 void display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-     
-    
+	//for (vector<CDrawableObject*>::iterator it = allObjects->begin(); it != allObjects->end(); it++) {
+	for (int i = 0; i < allObjects->size(); i++)
+	{
+		CDrawableObject* obj = allObjects->at(i);
+		obj->Draw();
+	}
+
+	// test draw sphere
+	if (true == false)
+	{
+		static GLUquadric *qsphere = 0;
+		qsphere = gluNewQuadric();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		gluSphere(qsphere, 1, 32, 32);
+	}
     glutSwapBuffers();
 }
 
@@ -55,11 +83,16 @@ void reshape(int w, int h){
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, (width / 2) / height, 1.0, 10.0);
-    
+	//gluPerspective(60.0, width / height, 1.0, 10.0);
+
+	float ke = width / 60;
+	float he = height / 60;
+
+	glOrtho(-ke, ke, -he, he, 0, 10);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-	//gluLookAt(0.0, 0.0, camera1_z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	gluLookAt(2.0, 2.0, 5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 void keymap(unsigned char key, int x, int y)
@@ -90,6 +123,7 @@ int main(int argc, char** argv)
     
     glutCreateWindow("Assignment 4, task 1");
 
+	initObjects();
     init(); 
     
     glutDisplayFunc(display);
@@ -98,6 +132,7 @@ int main(int argc, char** argv)
     // keyboard handling
 	glutKeyboardFunc(keymap);
     
+	// animate
 	glutIdleFunc(animation);
     
     glutMainLoop();
