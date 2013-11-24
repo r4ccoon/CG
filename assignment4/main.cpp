@@ -18,8 +18,7 @@
 
 #include <iostream>
 #include <vector> 
-#include "CCamera.h"
-#include "CDrawableObject.h"
+#include "CCamera.h" 
 #include "CCoordinate.h"
 #include "CPlane.h"
 #include "Trackball.h"
@@ -29,8 +28,7 @@ using namespace std;
 GLfloat width = 800;
 GLfloat height = 600;
 
-CCamera* camera;
-vector<CDrawableObject*> *allObjects;
+CCamera* camera; 
 SimpleTrackball *trackBall;
 CPlane *plane;
 CCoordinate *coord;
@@ -52,16 +50,10 @@ void init(void){
 
 void initObjects(){
 	camera = new CCamera();
-	trackBall = new SimpleTrackball();
-    
-	//allObjects = new vector<CDrawableObject*>();
-	// the cartesion coordinate lines
-	//allObjects->push_back(new CCoordinate(1));
+	trackBall = new SimpleTrackball(); 
     
     coord = new CCoordinate(1);
-    plane = new CPlane(1);
-    
-	//allObjects->push_back();
+    plane = new CPlane(1, 20); 
 }
  
 void display(void){

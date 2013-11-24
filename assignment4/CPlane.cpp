@@ -11,7 +11,7 @@
 
 #include "CPlane.h"
 
-CPlane::CPlane(float length)
+CPlane::CPlane(float length, float lineLength)
 {
 	_length = length;
     
@@ -19,28 +19,14 @@ CPlane::CPlane(float length)
     V = 0.1;
     W = 0.4;
     
-    _lambda1 = -10;
-    _lambda2 = 10;
+    _lineLength = lineLength; 
 }
 
 void CPlane::Draw(){
 	// plane
 	glColor4f(0.5, 0.5, 0.5, 0.5);
 	glBegin(GL_QUADS);
-	
-	/*
-	glVertex3f(-_length, 0, -_length);
-	glVertex3f(-_length, 0, _length);
-	glVertex3f(_length, 0, _length);
-	glVertex3f(_length, 0, -_length);
-	*/
-    /*
-	glVertex2f(-_length, -_length);
-	glVertex2f(-_length, _length);
-	glVertex2f(_length, _length);
-	glVertex2f(_length, -_length);
-    */
-    
+	 
     glVertex3f(-_length, -_length, W);
     glVertex3f(_length, -_length, W);
     glVertex3f(_length, _length, W);
@@ -51,12 +37,12 @@ void CPlane::Draw(){
 	// projection line
 	glColor3f(1, 1, 1);
 	glBegin(GL_LINES);
-    glVertex3f(_lambda1 * U, _lambda1 * V, _lambda1 * 1);
-    glVertex3f(_lambda2 * U, _lambda2 * V, _lambda2 * 1);
+    glVertex3f( _lineLength * U, _lineLength * V, _lineLength );
+    glVertex3f( -_lineLength * U, -_lineLength * V, -_lineLength );
 	glEnd();
 	
-	// The intersection point with the plane
-	// the points (x, y, w) of the w = 1 plane.
+	// The intersection vertice with the plane
+	// the vertice (x, y, w) of the w = 1 plane.
     glColor3f(1.0, 0.0, 0.0);
 	glPushMatrix();
     glTranslatef(U * W, V * W, W);
@@ -83,10 +69,10 @@ void CPlane::Key(unsigned char key){
             break;
             
         case 'e':
-            V+=0.1;
+            V += 0.1;
             break;
         case 'd':
-            V-=0.1;
+            V -= 0.1;
             break;
     }
 }

@@ -1,11 +1,9 @@
-#pragma once
-#include "CDrawableObject.h"
+#pragma once 
 
-class CPlane :
-	public CDrawableObject
+class CPlane  
 {
 public:
-	CPlane(float length);
+	CPlane(float length, float lineLength);
 	~CPlane();
 
 	void Draw();
@@ -15,6 +13,6 @@ public:
 
 private :
 	float _length;
-    float _lambda1, _lambda2;
+    float _lineLength;
 };
 

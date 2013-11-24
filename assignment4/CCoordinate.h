@@ -1,9 +1,8 @@
 #pragma once
 
-#include "vec3.h"
-#include "CDrawableObject.h"
+#include "vec3.h" 
 
-class CCoordinate :	public CDrawableObject
+class CCoordinate 
 {
 public:
 	CCoordinate(float length);	

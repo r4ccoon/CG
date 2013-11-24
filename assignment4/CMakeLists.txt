@@ -8,7 +8,8 @@ cmake_minimum_required(VERSION 2.6)
 SET(MY_PROJECT_NAME cgbit-assignment3-task1)
 
 # Enter a list of C/C++ source and header files (separated by space or ';'):
-SET(MY_SOURCE_FILES COrb.h COrb.cpp main.cpp)
+SET(MY_SOURCE_FILES CCamera.h CCoordinate.h CPlane.h TrackBall.h vec3.h)
+SET(MY_SOURCE_FILES CCamera.cpp CCoordinate.cpp CPlane.cpp TrackBall.cpp main.cpp)
 
 #-----------------------------------------------------------------------------
 # The following doesn't need to be changed for our usual exercise projects:
