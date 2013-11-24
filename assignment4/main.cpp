@@ -4,6 +4,12 @@
 //
 //  Created by Asmat, Laksono, Malik on 2/11/2013.
 // 
+//  q, a to change U
+//  w, s to change W
+//  e, d to change V
+//  **********
+//  the projection lane, collission sphere, and the plane codes are located in CPlane class
+//  **********
   
 #ifdef _WIN32
 #include <windows.h>
