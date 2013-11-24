@@ -32,6 +32,8 @@ GLfloat height = 600;
 CCamera* camera;
 vector<CDrawableObject*> *allObjects;
 SimpleTrackball *trackBall;
+CPlane *plane;
+CCoordinate *coord;
 
 void init(void){ 
     glClearColor (0.0, 0.0, 0.0, 0.0);
@@ -51,44 +53,29 @@ void init(void){
 void initObjects(){
 	camera = new CCamera();
 	trackBall = new SimpleTrackball();
-	allObjects = new vector<CDrawableObject*>();
+    
+	//allObjects = new vector<CDrawableObject*>();
 	// the cartesion coordinate lines
-	allObjects->push_back(new CCoordinate(5));
-	allObjects->push_back(new CPlane(5));
+	//allObjects->push_back(new CCoordinate(1));
+    
+    coord = new CCoordinate(1);
+    plane = new CPlane(1);
+    
+	//allObjects->push_back();
 }
  
 void display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-	//for (vector<CDrawableObject*>::iterator it = allObjects->begin(); it != allObjects->end(); it++) {
-	for (int i = 0; i < allObjects->size(); i++)
-	{
-		CDrawableObject* obj = allObjects->at(i);
-		obj->Draw();
-	}
-
-	// test draw sphere
-	if (true == false)
-	{
-		static GLUquadric *qsphere = 0;
-		qsphere = gluNewQuadric();
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		gluSphere(qsphere, 1, 32, 32);
-	}
-
+	coord->Draw();
+    plane->Draw();
+ 
 	camera->Look(width, height);
 	trackBall->multModelMatrix();
 
     glutSwapBuffers();
 }
 
-void animation(){
-    int elapsedTime = glutGet(GLUT_ELAPSED_TIME);
-    
-    // animation code here
-    
-    glutPostRedisplay();
-}
 
 void reshape(int w, int h){
     // set for display method got the correct display
@@ -96,18 +83,22 @@ void reshape(int w, int h){
     height = h;
     
     // viewport set
-    glViewport (0, 0, (GLsizei) w, (GLsizei) h); 
+    glViewport (0, 0, (GLsizei) w, (GLsizei) h);
+    
+	camera->Look(width, height);
 }
 
 void keyMap(unsigned char key, int x, int y)
 {
-	switch (key)
-	{
-		case 'r':
-        case 'R': 
-			camera->Reset();
-			break; 
+    plane->Key(key);
+    
+    if(key == 'r'){
+        camera->Reset();
+        plane->Reset();
+        trackBall->Reset();
 	}
+    
+    glutPostRedisplay();
 }
 
 void mouseMap(int button, int state, int x, int y)
@@ -124,11 +115,14 @@ void mouseMap(int button, int state, int x, int y)
 			trackBall->stopBall(x, y);
 		}
 	}
+    
+    glutPostRedisplay();
 }
 
 void mouseDrag(int x, int y)
 {
 	trackBall->rollBall(x, y);
+    glutPostRedisplay();
 }
     
 int main(int argc, char** argv)
@@ -151,9 +145,6 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(keyMap);
 	glutMouseFunc(mouseMap);
 	glutMotionFunc(mouseDrag);
-
-	// animate
-	glutIdleFunc(animation);
     
     glutMainLoop();
     return 0;

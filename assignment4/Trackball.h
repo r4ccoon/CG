@@ -1,7 +1,16 @@
 #ifndef TRACKBALL_H
 #define TRACKBALL_H
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#if __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <GL/glut.h>
+#endif
 
 
 typedef struct 
@@ -56,6 +65,7 @@ class SimpleTrackball : public Trackball {
   // (e.g. call in the display function)
   void multModelMatrix();
 
+    void Reset();
 
  private:
   void rotateBy(GLfloat *r);

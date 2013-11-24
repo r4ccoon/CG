@@ -194,3 +194,11 @@ void SimpleTrackball::multModelMatrix(){
 	glRotatef(_tbRot[0], _tbRot[1], _tbRot[2], _tbRot[3]);
 	glRotatef(_rotation[0], _rotation[1], _rotation[2], _rotation[3]);
 }
+
+void SimpleTrackball::Reset(){
+    _rotation[0] = _tbRot[0] = 0.0;
+	_rotation[1] = _tbRot[1] = 1.0;
+	_rotation[2] = _tbRot[2] = 0.0;
+	_rotation[3] = _tbRot[3] = 0.0;
+	_drag = false;
+}
