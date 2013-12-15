@@ -222,11 +222,11 @@ private:
         glColor3f( 0, 0, 0);
         glBegin(GL_LINES);
         
-        float startX = -1 *( _x - width/2);
-        float startY = ( _y - height/2);
+        float startX = ( _x - width/2);
+        float startY = -1 *( _y - height/2);
         
-        float endX = -1 *( _x2 - width/2);
-        float endY = ( _y2 - height/2);
+        float endX = ( _x2 - width/2);
+        float endY = -1 *( _y2 - height/2);
         
         glVertex2f(startX, startY);
         glVertex2f(endX, endY);
