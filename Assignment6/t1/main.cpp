@@ -29,39 +29,11 @@ int width = 640;
 int height = 480;
 const float _light = 0.5;
 
-// a class of a generic triangle.
-class Circle {
-    public :
-    GLint circle_points;
-    GLdouble radius;
-    
-    Circle(GLdouble vradius, GLint circlePoint){
-        radius = vradius;
-        circle_points = circlePoint;
-    }
-    
-    // draw the Circle
-    void Draw(void){
-        glBegin(GL_LINE_LOOP);
-        
-        // set color lines
-        glColor3f(0,0,1);
- 
-        double angle = 2 * PI / circle_points ;
-        double angle1 = 0.0; 
-        
-        glVertex2d(cos(0.0) * radius, sin(0.0) * radius);
-
-        for (int i = 0; i < circle_points; i++){
-            glVertex2d(cos(angle1) * radius, sin(angle1) * radius);
-            angle1 += angle ;
-        }
-        
-        glEnd();
-    }
-};
-
-
+/**
+ *
+ * class plane. class that contains HS2RGB implementation,
+ *
+ **/
 class Plane {
     public :
     GLdouble L;
@@ -184,6 +156,12 @@ class Plane {
     
 };
 
+/**
+ *
+ * class square. class that contains 2 boxes of picked colors
+ * and 2 rectangles of interpolated color
+ *
+ **/
 class Square{
 private:
     int _x, _y;
@@ -217,6 +195,7 @@ private:
             SetColorPosition2(x, y);
     }
     
+    // methods to call all draw colors
     void color(){
         color1();
         color2();
@@ -236,20 +215,37 @@ private:
         _y2 = y;
     }
     
+    ///
+    /// draw line from color 1 to color 2
+    ///
     void line(){
         glColor3f( 0, 0, 0);
         glBegin(GL_LINES);
-        glVertex2i(_x, _y);
-        glVertex2i(_x2, _y2);
+        
+        float startX = -1 *( _x - width/2);
+        float startY = ( _y - height/2);
+        
+        float endX = -1 *( _x2 - width/2);
+        float endY = ( _y2 - height/2);
+        
+        glVertex2f(startX, startY);
+        glVertex2f(endX, endY);
+        
         glEnd();
     }
     
+    ///
+    /// interpolates step by step
+    ///
     float interpolate(int startValue, int endValue, int lastStepNumber, int stepNumber)
     {
         float t = (float)lastStepNumber / stepNumber;
         return startValue + (endValue - startValue) * t;
     }
     
+    ///
+    /// draw interpolation color box in RGB
+    ///
     void colorInterpolateRGB(){
         glBegin(GL_POINTS);
         
@@ -273,6 +269,9 @@ private:
         glEnd();
     }
     
+    ///
+    /// draw interpolation color box in HLS
+    ///
     void colorInterpolateHLS(){
         glBegin(GL_POINTS);
         
@@ -299,6 +298,9 @@ private:
         glEnd();
     }
     
+    ///
+    /// draw 1st picked color
+    ///
     void color1(){
         glBegin(GL_POINTS);
         
@@ -329,6 +331,9 @@ private:
         glEnd();
     }
     
+    ///
+    /// draw 2nd picked color
+    ///
     void color2(){
         glBegin(GL_POINTS);
         
@@ -361,6 +366,12 @@ private:
     }
 };
 
+///
+/// initialize the objects for drawing
+///
+Plane thePlane = Plane(100);
+Square pickedColor = Square(40);
+
 void init(void){
     glClearColor(1.0, 1.0 , 1.0, 1.0);
     glViewport (0, 0, (GLsizei) width, (GLsizei) height);
@@ -379,16 +390,10 @@ void reshape(int w, int h){
     glOrtho(-width/2, width/2, -height/2, height/2 , -1.0f, 1.0f);
 }
 
-// initiate the triangle that we want to draw
-Circle theCircle = Circle(100, 64);
-Plane thePlane = Plane(100);
-Square pickedColor = Square(40);
-
 // method to be passed to glutdisplayfunc to draw the triangle lines and colors
 void draw(void){
     glClear(GL_COLOR_BUFFER_BIT);
     
-    theCircle.Draw();
     thePlane.color();
     pickedColor.color();
     
@@ -427,12 +432,10 @@ int main( int argc, char* argv[] )
     
     glutDisplayFunc(draw);
     glutReshapeFunc(reshape);
+	glutMouseFunc(mouseMap);
 	glutMotionFunc(mouseDrag);
     
-	glutMouseFunc(mouseMap);
-    
     glutMainLoop();
-    
 	return 0;
 }
 
