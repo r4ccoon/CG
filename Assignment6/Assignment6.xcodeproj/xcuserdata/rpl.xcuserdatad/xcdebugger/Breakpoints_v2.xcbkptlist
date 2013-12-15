@@ -88,11 +88,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "t1/main.cpp"
-            timestampString = "408819673.21382"
+            timestampString = "408822434.695844"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "212"
-            endingLineNumber = "212"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
             landmarkName = "reshape(int w, int h)"
             landmarkType = "7">
          </BreakpointContent>
@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "t1/main.cpp"
-            timestampString = "408819673.21382"
+            timestampString = "408822434.695844"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "200"
-            endingLineNumber = "200"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "init(void)"
             landmarkType = "7">
          </BreakpointContent>
@@ -120,11 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "t1/main.cpp"
-            timestampString = "408819673.21382"
+            timestampString = "408822434.695844"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "199"
-            endingLineNumber = "199"
+            startingLineNumber = "176"
+            endingLineNumber = "176"
             landmarkName = "init(void)"
             landmarkType = "7">
          </BreakpointContent>
@@ -136,29 +136,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "t1/main.cpp"
-            timestampString = "408819673.21382"
+            timestampString = "408822434.695844"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "192"
-            endingLineNumber = "192"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
             landmarkName = "saturation(float x, float y)"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "t1/main.cpp"
-            timestampString = "408819130.042578"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "123"
-            endingLineNumber = "123"
-            landmarkName = "HSL2RGB(double h, double sl, double l, GLfloat *rgb)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

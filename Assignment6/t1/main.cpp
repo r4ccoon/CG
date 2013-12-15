@@ -19,13 +19,13 @@
 
 #include <math.h>
 #define PI 3.14159
-#define r180_pi 57.2957795131
+#define r360_pi 114.591559026
 
 #include <cstdio>
 using namespace std;
 
-int width = 120;
-int height = 120;
+int width = 360;
+int height = 360;
 
 // a class of a generic triangle.
 class Circle {
@@ -60,72 +60,6 @@ class Circle {
     }
 };
 
-void HSL2RGB(double h, double sl, double l, GLfloat *rgb)
-{
-    double v;
-    double r,g,b;
-    
-    r = l;
-    g = l;
-    b = l;
-    
-    v = (l <= 0.5) ? (l * (1.0 + sl)) : (l + sl - l * sl);
-    if (v > 0)
-    {
-        double m;
-        double sv;
-        int sextant;
-        double fract, vsf, mid1, mid2;
-        
-        m = l + l - v;
-        sv = (v - m ) / v;
-        h *= 6.0;
-        sextant = (int)h;
-        fract = h - sextant;
-        vsf = v * sv * fract;
-        mid1 = m + vsf;
-        mid2 = v - vsf;
-        switch (sextant)
-        {
-            case 0:
-                r = v;
-                g = mid1;
-                b = m;
-                break;
-            case 1:
-                r = mid2;
-                g = v;
-                b = m;
-                break;
-            case 2:
-                r = m;
-                g = v;
-                b = mid1;
-                break;
-            case 3:
-                r = m;
-                g = mid2;
-                b = v;
-                break;
-            case 4:
-                r = mid1;
-                g = m;
-                b = v;
-                break;
-            case 5:
-                r = v;
-                g = m;
-                b = mid2;
-                break;
-        }
-    }
-    
-    rgb[0] = r;// * 255.0f;
-    rgb[1] = g;// * 255.0f;
-    rgb[2] = b;// * 255.0f;
-}
-
-
 class Plane {
     public :
     GLdouble L;
@@ -151,7 +85,7 @@ class Plane {
     
     void color(){
         float step = 1.0f/255;
-        step = 0.009;
+        //step = 0.009;
         glBegin(GL_POINTS);
         float i = 0;
         for(float x = -L; x < L; x += step){
@@ -159,15 +93,13 @@ class Plane {
                 GLfloat rgb[3] = {0,0,0};
                 
                 double sat = saturation(x, y);
-                float rad = fabs(atan2f(y, x));
-                float angle = rad * r180_pi;
-                if(angle < 0)
-                    angle = angle * -2;
+                float rad = atan2f(y, x);
+                float angle = fabs(rad * r360_pi);
                 
-                HSL2RGB(rad, sat, 0.5, rgb);
+                HS2RGB(rad, sat, rgb);
                 glColor3f (rgb[0] , rgb[1] , rgb[2] );
                 
-                printf("angle = %f  \n", rad);
+                //printf("angle = %f  \n", rad);
                 printf("color = %f %f %f \n", rgb[0], rgb[1], rgb[2]);
                 glVertex2f( x , y );
                 
@@ -179,6 +111,51 @@ class Plane {
         
         glEnd();
         glFlush();
+    }
+    
+    void HS2RGB(float H, float S, GLfloat *rgb){
+         float L = 0.5;
+        
+         if ( S == 0 )                       //HSL from 0 to 1
+         {
+             rgb[0] = L * 1;                      //RGB results from 0 to 1
+             rgb[1] = L * 1;
+             rgb[2] = L * 1;
+         }
+         else
+         {
+             float var_2 , var_1 = 0.0f;
+             if ( L < 0.5 )
+                 var_2 = L * ( 1 + S );
+             else
+                 var_2 = ( L + S ) - ( S * L );
+         
+             var_1 = 2 * L - var_2;
+        
+             rgb[0] = 1 * Hue_2_RGB( var_1, var_2, H + ( 1 / 3 ) );
+             rgb[1] = 1 * Hue_2_RGB( var_1, var_2, H );
+             rgb[2] = 1 * Hue_2_RGB( var_1, var_2, H - ( 1 / 3 ) );
+         }        
+    }
+    
+    float Hue_2_RGB( float v1, float v2, float vH )
+    {
+        if ( vH < 0 )
+            vH += 1;
+        
+        if ( vH > 1 )
+            vH -= 1;
+        
+        if ( ( 6 * vH ) < 1 )
+            return ( v1 + ( v2 - v1 ) * 6 * vH );
+        
+        if ( ( 2 * vH ) < 1 )
+            return ( v2 );
+        
+        if ( ( 3 * vH ) < 2 )
+            return ( v1 + ( v2 - v1 ) * ( ( 2 / 3 ) - vH ) * 6 );
+     
+        return ( v1 );
     }
     
     float saturation(float x, float y){
