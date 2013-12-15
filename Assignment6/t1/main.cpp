@@ -24,8 +24,8 @@
 #include <cstdio>
 using namespace std;
 
-int width = 480;
-int height = 320;
+int width = 120;
+int height = 120;
 
 // a class of a generic triangle.
 class Circle {
@@ -149,102 +149,9 @@ class Plane {
         glFlush();
     }
     
-    void HS2RGB(float H, float S, GLfloat *vRGB){
-        
-        /*float L = 0.5;
-      
-        float C = (1 - fabs((2 * L) - 1)) * S;
-        float k = fmod((H / 60) , 2);
-        
-        float X = C * (1 - fabs(k - 1));
-        float m = L - (C/2);
-        
-        GLfloat rgb[3];
-        if(H <= 0 && H < 60)
-        {
-            rgb[0] = C;
-            rgb[1] = X;
-            rgb[2] = 0;
-        }
-        
-        if(H <= 60 && H < 120)
-        {
-            rgb[0] = X;
-            rgb[1] = C;
-            rgb[2] = 0;
-        }
-        
-        if(H <= 120 && H < 180)
-        {
-            rgb[0] = 0;
-            rgb[1] = C;
-            rgb[2] = X;
-        }
-        
-        if(H <= 120 && H < 240)
-        {
-            rgb[0] = 0;
-            rgb[1] = X;
-            rgb[2] = C;
-        }
-        
-        if(H <= 240 && H < 300)
-        {
-            rgb[0] = X;
-            rgb[1] = 0;
-            rgb[2] = C;
-        }
-        
-        if(H <= 300 && H < 360)
-        {
-            rgb[0] = C;
-            rgb[1] = 0;
-            rgb[2] = X;
-        }
-        
-        vRGB[0] = rgb[0] + m;
-        vRGB[1] = rgb[1] + m;
-        vRGB[2] = rgb[2] + m;
-        
-        H = H/60;
-        if ( S == 0 )                       //HSL from 0 to 1
-        {
-            rgb[0] = L * 255;                      //RGB results from 0 to 255
-            rgb[1] = L * 255;
-            rgb[2] = L * 255;
-        }
-        else
-        {
-            float var_2 , var_1 = 0.0f;
-            if ( L < 0.5 )
-                var_2 = L * ( 1 + S );
-            else
-                var_2 = ( L + S ) - ( S * L );
-                    
-            var_1 = 2 * L - var_2;
-            
-            rgb[0] = 1 * Hue_2_RGB( var_1, var_2, H + ( 1 / 3.0f ) );
-            rgb[1] = 1 * Hue_2_RGB( var_1, var_2, H );
-            rgb[2] = 1 * Hue_2_RGB( var_1, var_2, H - ( 1 / 3.0f ) );
-        }
-        */
-    }
-    
-    //Function Hue_2_RGB
-    /*float Hue_2_RGB( float v1, float v2, float vH )
-    {
-        if ( vH < 0 ) vH += 1;
-        if ( vH > 1 ) vH -= 1;
-        if ( ( 6.0f * vH ) < 1 ) return ( v1 + ( v2 - v1 ) * 6.0f * vH );
-        if ( ( 2.0f * vH ) < 1 ) return ( v2 );
-        if ( ( 3.0f * vH ) < 2 ) return ( v1 + ( v2 - v1 ) * ( ( 2 / 3.0f ) - vH ) * 6.0f );
-        
-        return ( v1 );
-    }*/
-    
     void color(){
         float step = 1.0f/255;
-        
+        step = 0.009;
         glBegin(GL_POINTS);
         float i = 0;
         for(float x = -L; x < L; x += step){
@@ -260,7 +167,7 @@ class Plane {
                 HSL2RGB(rad, sat, 0.5, rgb);
                 glColor3f (rgb[0] , rgb[1] , rgb[2] );
                 
-                printf("angle = %f  \n", angle);
+                printf("angle = %f  \n", rad);
                 printf("color = %f %f %f \n", rgb[0], rgb[1], rgb[2]);
                 glVertex2f( x , y );
                 
@@ -324,6 +231,8 @@ int main( int argc, char* argv[] )
 {
 	glutInit(&argc, argv);
     
+    printf("anglea = %f  \n", atan2(-1, -1));
+
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowPosition(10,10);
     glutInitWindowSize(width, height);
