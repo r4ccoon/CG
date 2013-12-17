@@ -5,6 +5,7 @@
 //  Created by Ridho, Rohan, Zeeshan
 //
 //  please ctrl+f HS2RGB to find the required implementatsion of the assignment
+//  class square to handle interpolation and color picker
 
 #ifdef _WIN32
 #include <windows.h>
@@ -19,8 +20,8 @@
 
 #include <math.h>
 #define PI 3.14159
-#define r360_pi 114.591559026
 #define r180_pi 57.2957795131
+#define full360Rad 6.283185307
 
 #include <cstdio>
 using namespace std;
@@ -70,8 +71,11 @@ class Plane {
                 int rgb[3] = {0,0,0};
                 
                 double sat = Plane::saturation(x, y, L);
-                float rad = fabs(atan2f(y, x));
-                int angle = fabs(rad * r360_pi);
+                float rad = (atan2f(y, x));
+                if(rad < 0)
+                    rad = 6.283185307 - fabs(rad);
+                
+                float angle = fabs(rad * r180_pi);
                 
                 // for debug info
                 if(maxAng < angle)
@@ -80,11 +84,8 @@ class Plane {
                     minAng = angle;
                 
                 HS2RGB(angle, sat, rgb);
-                //glColor3b(255 ,53 ,30);
                 glColor3b (rgb[0] , rgb[1] , rgb[2] );
                 
-                //printf("angle = %f  \n", rad);
-                //printf("color = %i %i %i \n", rgb[0], rgb[1], rgb[2]);
                 glVertex2f( x , y );
                 
                 i++;
@@ -92,9 +93,8 @@ class Plane {
         }
         
         // for debug info
-        printf("max angle = %f \n", maxAng);
-        printf("min angle = %f \n", minAng);
-        printf("total = %f \n", i);
+        printf("min..max angle = %f .. %f \n", minAng, maxAng);
+        printf("total loop = %f \n", i);
         
         glEnd();
         glFlush();
@@ -107,6 +107,13 @@ class Plane {
         float C = ( 1 - fabs( 2 * L - 1 ) ) * S;
         float X = C * ( 1 - fabs( fmod( ( h / 60 ), 2 ) - 1 ) );
         float M = L - ( C / 2 );
+        
+        if(S > 1){
+            vRGB[0] = 0;
+            vRGB[1] = 0;
+            vRGB[2] = 0;
+            return;
+        }
         
         if ( h < 60 ) {
             r = C;
@@ -141,6 +148,13 @@ class Plane {
         vRGB[0] = floor( fabs(r) );
         vRGB[1] = floor( fabs(g) );
         vRGB[2] = floor( fabs(b) );
+        
+        if( vRGB[0] < 0 || vRGB[0] > 255 || 
+        	vRGB[1] < 0 || vRGB[1] > 255 || 
+        	vRGB[2] < 0 || vRGB[2] > 255 ){
+        	printf("wrong angle/s/rgb = %f/%f/ %i-%i-%i \n", h,S,vRGB[0], vRGB[1],vRGB[2] );
+            
+        }
     }
     
     static float saturation(float x, float y, float Length){
@@ -164,8 +178,10 @@ class Plane {
  **/
 class Square{
 private:
-    int _x, _y;
-    int _x2, _y2;
+    int _x = 307;
+    int _y = 217;
+    int _x2= 307;
+    int _y2= 217;
     int _mouseClick = 0;
     GLdouble L;
     const int _interpolateStep = 150;
@@ -240,7 +256,7 @@ private:
     float interpolate(int startValue, int endValue, int lastStepNumber, int stepNumber)
     {
         float t = (float)lastStepNumber / stepNumber;
-        return startValue + (endValue - startValue) * t;
+        return startValue + (endValue - startValue) * (float)t;
     }
     
     ///
@@ -251,21 +267,23 @@ private:
         
         float start = - width/2;
         
-        for(float x = start; x < start + L; x ++){
-            int interpolateVar = 1;
-            for(float y = L + 10; y < L + 10 + 150; y ++){
-                int rgb[3] = {0, 0, 0};
-                
-                rgb[0] = interpolate(_rgb[0], _rgb2[0], interpolateVar, _interpolateStep);
-                rgb[1] = interpolate(_rgb[1], _rgb2[1], interpolateVar, _interpolateStep);
-                rgb[2] = interpolate(_rgb[2], _rgb2[2], interpolateVar, _interpolateStep);
-                
-                glColor3b (rgb[0] , rgb[1] , rgb[2] );
+        int interpolateVar = 0;
+        for(float y = L + 10; y < L + 10 + 150; y ++){
+            int rgb[3] = {0, 0, 0};
+            
+            rgb[0] = interpolate(_rgb[0], _rgb2[0], interpolateVar, _interpolateStep);
+            rgb[1] = interpolate(_rgb[1], _rgb2[1], interpolateVar, _interpolateStep);
+            rgb[2] = interpolate(_rgb[2], _rgb2[2], interpolateVar, _interpolateStep);
+            
+            glColor3b (rgb[0] , rgb[1] , rgb[2] );
+            
+            for(float x = start; x < start + L; x ++){
                 glVertex2f( x , y );
-                
-                interpolateVar++;
             }
+            
+            interpolateVar++;
         }
+        
         glEnd();
     }
     
@@ -276,24 +294,27 @@ private:
         glBegin(GL_POINTS);
         
         float start = - width/2;
-        for(float x = start + L; x < start + L + L; x ++){
-            int interpolateVar = 1;
-            for(float y = L + 10; y < L + 10 + 150; y ++){
-                float hls[3] = {0.0f, 0.0f, 0.0f};
-                int rgb[3] = {0,0,0};
-                
-                hls[0] = interpolate(_hls[0], _hls2[0], interpolateVar, _interpolateStep);
-                hls[1] = interpolate(_hls[1], _hls2[1], interpolateVar, _interpolateStep);
-                hls[2] = interpolate(_hls[2], _hls2[2], interpolateVar, _interpolateStep);
-                
-                Plane::HS2RGB(hls[0], hls[1], rgb);
-                
-                glColor3b (rgb[0] , rgb[1] , rgb[2] );
+        
+        int interpolateVar = 0;
+        for(float y = L + 10; y < L + 10 + 150; y ++){
+            float hls[3] = {0.0f, 0.0f, 0.0f};
+            int rgb[3] = {0,0,0};
+            
+            hls[0] = interpolate(_hls[0], _hls2[0], interpolateVar, _interpolateStep);
+            hls[1] = interpolate(_hls[1], _hls2[1], interpolateVar, _interpolateStep);
+            hls[2] = interpolate(_hls[2], _hls2[2], interpolateVar, _interpolateStep);
+            
+            Plane::HS2RGB(hls[0], hls[1], rgb);
+            
+            glColor3b (rgb[0] , rgb[1] , rgb[2] );
+            for(float x = start + L; x < start + L + L; x ++){
                 glVertex2f( x , y );
-                
-                interpolateVar++;
             }
+            
+            interpolateVar++;
         }
+        
+        
         printf("coord = %i %i \n", _x, _y);
         glEnd();
     }
@@ -305,25 +326,35 @@ private:
         glBegin(GL_POINTS);
         
         float start = - width/2;
+        float startH = height/2;
+        
+        int rgb[3] = {0, 0, 0};
+        
+        int vX = _x + start;
+        int vY = startH - _y;
+        double sat = Plane::saturation(vX, vY, L);
+        float rad = (atan2f(vY, vX));
+        if(rad < 0)
+            rad = full360Rad - fabs(rad);
+        
+        float angle = fabs(rad * r180_pi);
+        
+        printf("angle1 || rad = %f || %f \n", angle, rad);
+        
+        Plane::HS2RGB(angle, sat, rgb);
+        
+        _rgb[0] = rgb[0];
+        _rgb[1] = rgb[1];
+        _rgb[2] = rgb[2];
+        
+        _hls[0] = angle;
+        _hls[1] = sat;
+        _hls[2] = _light;
+        
+        glColor3b (rgb[0] , rgb[1] , rgb[2] );
+
         for(float x = start; x < start + L; x ++){
             for(float y = 0; y < L; y ++){
-                int rgb[3] = {0, 0, 0};
-                
-                double sat = Plane::saturation(_x, _y, L);
-                float rad = fabs(atan2f(_y, _x));
-                float angle = fabs(rad * r360_pi);
-                
-                Plane::HS2RGB(angle, sat, rgb);
-                
-                _rgb[0] = rgb[0];
-                _rgb[1] = rgb[1];
-                _rgb[2] = rgb[2];
-                
-                _hls[0] = angle;
-                _hls[1] = sat;
-                _hls[2] = _light;
-
-                glColor3b (rgb[0] , rgb[1] , rgb[2] );
                 glVertex2f( x , y );
             }
         }
@@ -338,25 +369,33 @@ private:
         glBegin(GL_POINTS);
         
         float start = - width/2;
+        float startH = height/2;
+        
+        int rgb[3] = {0, 0, 0};
+        
+        int vX = _x2 + start;
+        int vY = startH - _y2;
+        double sat = Plane::saturation(vX, vY, L);
+        float rad = fabs(atan2f(vY, vX));
+        if(rad < 0)
+            rad = full360Rad - fabs(rad);
+        
+        float angle = fabs(rad * r180_pi);
+        
+        Plane::HS2RGB(angle, sat, rgb);
+        
+        _rgb2[0] = rgb[0];
+        _rgb2[1] = rgb[1];
+        _rgb2[2] = rgb[2];
+        
+        _hls2[0] = angle;
+        _hls2[1] = sat;
+        _hls2[2] = _light;
+        
+        glColor3b (rgb[0] , rgb[1] , rgb[2] );
+ 
         for(float x = start + L; x < start + L + L; x ++){
             for(float y = 0; y < L; y ++){
-                int rgb[3] = {0, 0, 0};
-                
-                double sat = Plane::saturation(_x2, _y2, L);
-                float rad = fabs(atan2f(_y2, _x2));
-                float angle = fabs(rad * r360_pi);
-                
-                Plane::HS2RGB(angle, sat, rgb);
-                
-                _rgb2[0] = rgb[0];
-                _rgb2[1] = rgb[1];
-                _rgb2[2] = rgb[2];
-                
-                _hls2[0] = angle;
-                _hls2[1] = sat;
-                _hls2[2] = _light;
-                
-                glColor3b (rgb[0] , rgb[1] , rgb[2] );
                 glVertex2f( x , y );
             }
         }
@@ -406,7 +445,8 @@ void mouseMap(int button, int state, int x, int y)
 	{
 		if (state == GLUT_DOWN)
 		{
-            pickedColor.MouseClick(x, y);
+            if((x >=220 && x <= 420 && y >= 140 && y <= 340))
+                pickedColor.MouseClick(x, y);
         }
 	}
     
