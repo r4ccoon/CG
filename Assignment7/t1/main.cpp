@@ -32,9 +32,10 @@ Decasteljau decasteljau;
 void init(void){
     glClearColor(1.0, 1.0 , 1.0, 1.0);
     glViewport (0, 0, (GLsizei) width, (GLsizei) height);
+    glEnable(GL_POINT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-width/2, width/2, -height/2, height/2 , -1.0f, 1.0f);
+    glOrtho(0, width, 0, height , -1.0f, 1.0f);
 }
 
 void reshape(int w, int h){
@@ -44,12 +45,12 @@ void reshape(int w, int h){
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-width/2, width/2, -height/2, height/2 , -1.0f, 1.0f);
+    glOrtho(0, width, 0, height , 0.0f, 1.0f);
 }
 
 // method to be passed to glutdisplayfunc to draw the triangle lines and colors
 void draw(void){
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     decasteljau.Draw();
     
@@ -61,16 +62,14 @@ void mouseMap(int button, int state, int x, int y)
 	if (button == GLUT_LEFT_BUTTON)
 	{
 		if (state == GLUT_DOWN)
-		{
             decasteljau.MouseClick(x, y);
-        }
 	}
     else if(button == GLUT_RIGHT_BUTTON)
     {
         if (state == GLUT_DOWN)
             decasteljau.RightMouseClick();
     }
-    
+    glFlush();
     glutPostRedisplay();
 }
 

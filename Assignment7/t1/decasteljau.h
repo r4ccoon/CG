@@ -25,7 +25,7 @@
 using namespace std;
 
 /**
- *
+ * point struct
  */
 class Point
 {
@@ -49,31 +49,76 @@ public :
     }
     
     void MouseClick(int x, int y){
+        float vy = -1*(y - 480);
+        printf("x y = %d %f \n", x, vy );
+        _points[iter] = new Point(x, vy, 0);
+        iter++;
     }
     
     // reset all the points
     void RightMouseClick(){
+        for(int i = 0; i <= iter;i++){
+            if(_points[i] != NULL)
+                // unset all point
+                _points[i] = NULL;
+        }
+        // reset point counter
+        iter = 0;
     }
     
     // methods to call all draw colors
     void Draw(){
-        straightLines();
+        drawPoints();
+        drawStraightLines();
         glFlush();
     }
     
 private:
-    Point _points[100];
+    int iter = 0;
+    Point* _points[100];
     const int _interpolateStep = 0.2;
+    
     ///
     /// draw line from color 1 to color 2
     ///
-    void straightLines(){
+    void drawStraightLines(){
         glColor3f( 0, 0, 0);
-        glBegin(GL_LINES);
         
-        glVertex2f(0, 0);
-        glVertex2f(100, 100);
+        for(int i = 0; i <= iter;i++){
+            glBegin(GL_LINES);
+            if(i > 0){
+                Point* point1 = _points[i - 1];
+                if(point1 != NULL){
+                    glVertex2f(point1->x, point1->y);
+                }
+            }
+            
+            Point* point2 = _points[i];
+            if(point2 != NULL){
+                glVertex2f(point2->x, point2->y);
+            }
+            glEnd();
+        }
+    }
+    
+    void drawBezier(){
         
+    }
+    
+    ///
+    ///
+    ///
+    void drawPoints(){
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glPointSize(5);
+        
+        glBegin(GL_POINTS);
+        for(int i = 0; i <= iter;i++){
+            Point* point = _points[i];
+            if(point != NULL){
+                glVertex2f(point->x, point->y);
+            }
+        }
         glEnd();
     }
     
