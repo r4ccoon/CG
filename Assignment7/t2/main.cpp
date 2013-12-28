@@ -22,12 +22,12 @@
 #include <cstdio>
 using namespace std;
 
-#include "decasteljau.h"
+#include "deboor.h"
 
 int width = 640;
 int height = 480;
 
-Decasteljau decasteljau;
+Deboor deboor;
 
 void init(void){
     glClearColor(1.0, 1.0 , 1.0, 1.0);
@@ -42,7 +42,7 @@ void reshape(int w, int h){
     width = w;
     height = h;
     
-	decasteljau.reshape(w, h);
+	deboor.reshape(w, h);
 
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
@@ -54,7 +54,7 @@ void reshape(int w, int h){
 void draw(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    decasteljau.Draw();
+	deboor.Draw();
     
     glFlush();
 }
@@ -64,12 +64,12 @@ void mouseMap(int button, int state, int x, int y)
 	if (button == GLUT_LEFT_BUTTON)
 	{
 		if (state == GLUT_DOWN)
-            decasteljau.MouseClick(x, y);
+			deboor.MouseClick(x, y);
 	}
     else if(button == GLUT_RIGHT_BUTTON)
     {
         if (state == GLUT_DOWN)
-            decasteljau.RightMouseClick();
+			deboor.RightMouseClick();
     }
 
     glutPostRedisplay();
@@ -83,7 +83,7 @@ int main( int argc, char* argv[] )
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowPosition(10,10);
     glutInitWindowSize(width, height);
-    glutCreateWindow("Assignment 7.1:left click to add points, right click to reset");
+    glutCreateWindow("Assignment 7.2:left click to add points, right click to reset");
     
     init();
     

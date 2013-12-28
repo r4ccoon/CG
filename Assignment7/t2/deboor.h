@@ -1,12 +1,6 @@
-//
-//  decasteljau.h
-//  Assignment7
-// 
-//
-//
-
-#ifndef Assignment7_decasteljau_h
-#define Assignment7_decasteljau_h
+ 
+#ifndef Assignment7_deboor_h
+#define Assignment7_deboor_h
 
 #ifdef _WIN32
 #include <windows.h>
@@ -41,10 +35,20 @@ public:
  * class Decasteljau. class that contains points, lines and the curve
  *
  **/
-class Decasteljau{
+class Deboor{
 
 public :
-    Decasteljau(){
+	Deboor(){
+		knots[0] = 0;
+		knots[1] = 0;
+		knots[2] = 0; 
+		knots[3] = 0; 
+		knots[4] = 1; 
+		knots[5] = 2; 
+		knots[6] = 3; 
+		knots[7] = 3; 
+		knots[8] = 3; 
+		knots[9] = 3;	  
     }
 
 	void reshape(int w, int h){
@@ -75,8 +79,8 @@ public :
     // methods to call all draw colors
     void Draw(){
         drawPoints();
-        drawStraightLines();
-		drawCasteljau();
+        drawStraightLines(); 
+		drawBSplines();
         glFlush();
     }
     
@@ -86,40 +90,10 @@ private:
 
 	int iter = 0;
     Point* _points[100];
-    const int _interpolateStep = 0.01;
+    const float _interpolateStep = 0.01;  
+	const int degree = 3;
 
-	void drawCasteljau() {
-		// dont do if points 0 is null
-		if (_points[0] == NULL)
-			return;
-
-		glColor3f(0, 0, 0);
-
-		glBegin(GL_LINE_STRIP); 
-		for (double t = 0; t <= 1; t += _interpolateStep) {
-			Point tmp = getCasteljauPoint(iter - 1 , 0, t); 
-			 
-			// draw the line 1 by 1
-			glVertex2d(tmp.x, tmp.y);
-		}
-		glEnd();
-	}
-
-
-	Point getCasteljauPoint(int r, int i, double t) {
-		// return if its only 1 points in the program yet
-		if (r == 0) 
-			return Point(_points[i]->x, _points[i]->y, 0);
-
-		Point p1 = getCasteljauPoint(r - 1, i, t);
-		Point p2 = getCasteljauPoint(r - 1, i + 1, t);
-
-		return Point(
-			(int)((1 - t) * p1.x + t * p2.x), 
-			(int)((1 - t) * p1.y + t * p2.y), 
-			0
-		);
-	}
+	float knots[10];
     
     ///
     /// draw line from color 1 to color 2
@@ -136,6 +110,46 @@ private:
 		}
 		glEnd();
     }
+
+	// 
+	float deBoor(int n, int i, float t, float* knots)
+	{
+		if (n == 0)
+		{
+			if ((knots[i] <= t) && (t < knots[i + 1]))
+				return 1;
+
+			return 0;
+		}
+		else
+		{
+			float denominator1 = knots[i + n] - knots[i];
+			float denominator2 = knots[i + n + 1] - knots[i + 1];
+			float quotient1 = (denominator1 == 0) ? 0 : (t - knots[i]) / denominator1;
+			float quotient2 = (denominator2 == 0) ? 0 : (knots[i + n + 1] - t) / denominator2;
+
+			return quotient1 * deBoor(n - 1, i, t, knots) + quotient2 * deBoor(n - 1, i + 1, t, knots);
+		}
+	}
+
+	void drawBSplines()
+	{  
+		glColor3f(0.0, 0.0, 0.0);
+		glBegin(GL_LINE_STRIP);
+		for (float t = 0; t <= degree; t += _interpolateStep)
+		{
+			Point p;
+			for (int i = 0; i < iter; ++i)
+			{
+				float deBoorCoefficient = deBoor(degree, i, t, knots);
+				p.x += _points[i]->x * deBoorCoefficient;
+				p.y += _points[i]->y * deBoorCoefficient;
+			}
+			glVertex2f(p.x, p.y);
+		}
+		glEnd();
+	}
+
      
     ///
     ///

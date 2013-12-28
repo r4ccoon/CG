@@ -5,10 +5,10 @@ cmake_minimum_required(VERSION 2.6)
 #-----------------------------------------------------------------------------
 
 # Enter the name of your project and executable here:
-SET(MY_PROJECT_NAME cgbit-assignment7-task1)
+SET(MY_PROJECT_NAME cgbit-assignment7-task2)
 
 # Enter a list of C/C++ source and header files (separated by space or ';'):
-SET(MY_SOURCE_FILES decasteljau.h main.cpp)
+SET(MY_SOURCE_FILES deboor.h main.cpp)
 
 
 #-----------------------------------------------------------------------------
