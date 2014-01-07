@@ -86,7 +86,7 @@ private:
 
 	int iter = 0;
     Point* _points[100];
-    const int _interpolateStep = 0.01;
+    const float _interpolateStep = 0.01;
 
 	void drawCasteljau() {
 		// dont do if points 0 is null
